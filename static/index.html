@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>URL Shortener</title>
+</head>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: aqua;
+  }
+  
+  h1 {
+    margin-top: 50px;
+  }
+  
+  form {
+    margin-top: 50px;
+  }
+  
+  input[type="text"] {
+    padding: 5px;
+    width: 400px;
+  }
+  
+  button {
+    padding: 5px 10px;
+  }
+  
+  #shortUrlContainer {
+    margin-top: 20px;
+  }
+  
+</style>
+<body>
+  <h1>URL Shortener</h1>
+  <form id="urlForm" onsubmit="submitForm(event)">
+    <input type="text" id="longUrlInput" placeholder="Enter a long URL" required>
+    <button type="submit">Shorten</button>
+  </form>
+  <div id="shortUrlContainer" style="display: none;">
+    <p>Your short URL:</p>
+    <a id="shortUrlLink" href=""></a>
+  </div>
+  <script>
+    function submitForm(event) {
+  event.preventDefault();
+  const longUrlInput = document.getElementById("longUrlInput");
+  const urlForm = document.getElementById("urlForm");
+  const shortUrlContainer = document.getElementById("shortUrlContainer");
+  const shortUrlLink = document.getElementById("shortUrlLink");
+
+  fetch("http://localhost:5000/shorten", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      longUrl: longUrlInput.value,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      shortUrlLink.textContent = data.shortUrl;
+      shortUrlLink.href = data.shortUrl;
+      shortUrlContainer.style.display = "block";
+      urlForm.reset();
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+
+  </script>
+</body>
+</html>
